@@ -1,0 +1,58 @@
+<div class="container mt-4">
+  <h2>Create Coupon</h2>
+  <form (ngSubmit)="onSubmit()" #couponForm="ngForm">
+    <div class="mb-3">
+      <label for="code" class="form-label">Coupon Code:</label>
+      <input
+        type="text"
+        id="code"
+        name="code"
+        [(ngModel)]="coupon.code"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="maxUsage" class="form-label">Max Usage:</label>
+      <input
+        type="number"
+        id="maxUsage"
+        name="maxUsage"
+        [(ngModel)]="coupon.maxUsage"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="valueType" class="form-label">Value Type:</label>
+      <select
+        id="valueType"
+        name="valueType"
+        [(ngModel)]="coupon.valueType"
+        class="form-select"
+        required
+      >
+        <option value="percentage">Percentage</option>
+        <option value="fixed">Fixed</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="value" class="form-label">Value:</label>
+      <input
+        type="number"
+        id="value"
+        name="value"
+        [(ngModel)]="coupon.value"
+        class="form-control"
+        required
+      />
+    </div>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="!couponForm.valid"
+    >
+      Create Coupon
+    </button>
+  </form>
+</div>
