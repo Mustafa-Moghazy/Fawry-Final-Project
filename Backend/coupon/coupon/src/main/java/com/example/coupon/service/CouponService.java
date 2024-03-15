@@ -11,4 +11,5 @@ public interface CouponService {
     Coupon createCoupon(CouponDTO couponDTO);
     Coupon updateCoupon(CouponDTO couponDTO);
     Coupon deleteCoupon(CouponDTO couponDTO);
+    boolean ISValidToSave(CouponDTO couponDTO);
 }
