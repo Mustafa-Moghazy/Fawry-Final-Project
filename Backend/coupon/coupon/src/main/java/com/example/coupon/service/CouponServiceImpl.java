@@ -59,6 +59,7 @@ public class CouponServiceImpl implements CouponService{
         }
     }
 
+    @Transactional
     @Override
     public void deleteCoupon(String code) {
         Coupon theCoupon = findByCode(code);
