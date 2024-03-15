@@ -5,6 +5,7 @@ import com.example.coupon.entity.Coupon;
 import com.example.coupon.exception.CreateCouponException;
 import com.example.coupon.exception.FindByCodeException;
 import com.example.coupon.repository.CouponRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,15 @@ public class CouponServiceImpl implements CouponService{
 
     @Override
     public Coupon findByCode(String code) {
-        return couponRepo.findByCode(code);
+        Coupon theCoupon = couponRepo.findByCode(code);
+        if (theCoupon == null)
+            throw new FindByCodeException("Coupon with code: " + code + "Not Found!!!");
+        return theCoupon;
     }
 
     @Override
     public Coupon createCoupon(CouponDTO couponDTO) {
-        Coupon theCoupon = findByCode(couponDTO.getCode());
+        Coupon theCoupon = couponRepo.findByCode(couponDTO.getCode());
         if (theCoupon != null){
             throw new FindByCodeException("Coupon With Code: " + couponDTO.getCode() +" Already Exist");
         }
@@ -40,12 +44,27 @@ public class CouponServiceImpl implements CouponService{
 
     @Override
     public Coupon updateCoupon(CouponDTO couponDTO) {
-        return null;
+        Coupon theCoupon = findByCode(couponDTO.getCode());
+        if (ISValidToSave(couponDTO)) {
+            // set new values //
+            theCoupon.setCode(couponDTO.getCode());
+            theCoupon.setValue(couponDTO.getValue());
+            theCoupon.setValueType(couponDTO.getValueType());
+            theCoupon.setMaxNumberOfUsages(couponDTO.getMaxNumberOfUsages());
+            theCoupon.setExpiryDate(couponDTO.getExpiryDate());
+            // save new object value //
+            return couponRepo.save(theCoupon);
+        }else {
+            throw new CreateCouponException("Not Valid Data Provided");
+        }
     }
 
     @Override
-    public Coupon deleteCoupon(CouponDTO couponDTO) {
-        return null;
+    public void deleteCoupon(String code) {
+        Coupon theCoupon = findByCode(code);
+        if (theCoupon != null) {
+            couponRepo.deleteByCode(code);
+        }
     }
     @Override
     public boolean ISValidToSave(CouponDTO coupon){

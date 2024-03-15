@@ -10,6 +10,6 @@ public interface CouponService {
     Coupon findByCode(String Code);
     Coupon createCoupon(CouponDTO couponDTO);
     Coupon updateCoupon(CouponDTO couponDTO);
-    Coupon deleteCoupon(CouponDTO couponDTO);
+    void deleteCoupon(String code);
     boolean ISValidToSave(CouponDTO couponDTO);
 }
