@@ -16,6 +16,15 @@ public class ConsumptionHistory {
     private Coupon coupon;
     private Date consumptionDate;
 
+    public ConsumptionHistory() {
+    }
+
+    public ConsumptionHistory(long orderId, Coupon theCoupon, Date date) {
+        this.coupon = theCoupon;
+        this.orderId = orderId;
+        this.consumptionDate = date;
+    }
+
     public long getId() {
         return id;
     }
