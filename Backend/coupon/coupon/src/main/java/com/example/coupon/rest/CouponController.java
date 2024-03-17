@@ -2,6 +2,7 @@ package com.example.coupon.rest;
 
 import com.example.coupon.dto.CouponDTO;
 import com.example.coupon.entity.Coupon;
+import com.example.coupon.service.CouponService;
 import com.example.coupon.service.CouponServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import java.util.List;
 @RequestMapping("api")
 public class CouponController {
     @Autowired
-    CouponServiceImpl couponService;
+    CouponService couponService;
 
     @GetMapping("coupons")
     public List<Coupon> getAllCoupons(){
