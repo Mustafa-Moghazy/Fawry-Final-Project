@@ -4,6 +4,7 @@ import com.example.product.dto.ProductDTO;
 import com.example.product.entity.Category;
 import com.example.product.entity.Product;
 import com.example.product.exception.CreateProductException;
+import com.example.product.exception.ProductNotFoundEception;
 import com.example.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,31 +47,42 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<Product> getAllProducts() {
-        return null;
+        return productRepository.findAll();
     }
 
     @Override
     public Page<Product> getAllProductsPageable(Pageable pageable) {
-        return null;
+
+        return productRepository.findAll(pageable);
     }
 
     @Override
     public List<Product> findByCategoryName(String categoryName) {
-        return null;
+        return productRepository.findByCategoryName(categoryName);
     }
 
     @Override
     public Product findByCode(String code) {
-        return null;
+        Product theProduct = productRepository.findByCode(code);
+        if(theProduct == null)
+            throw new ProductNotFoundEception("Product with code: "+code+" Not Found!!");
+        return productRepository.findByCode(code);
     }
 
     @Override
     public Product updateProduct(String code, ProductDTO productDTO) {
-        return null;
+        Product theProduct = productRepository.findByCode(code);
+        if(theProduct == null)
+            throw new ProductNotFoundEception("Product with code: "+code+" Not Found!!");
+
+        return createProduct(productDTO);
     }
 
     @Override
     public void deleteProduct(String code) {
-
+        Product theProduct = productRepository.findByCode(code);
+        if(theProduct == null)
+            throw new ProductNotFoundEception("Product with code: "+code+" Not Found!!");
+        productRepository.delete(theProduct);
     }
 }
