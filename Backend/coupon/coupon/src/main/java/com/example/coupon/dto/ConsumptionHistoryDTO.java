@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ConsumptionHistoryDTO {
-    private long orderId;
+    private String orderCode;
     private String couponCode;
 }

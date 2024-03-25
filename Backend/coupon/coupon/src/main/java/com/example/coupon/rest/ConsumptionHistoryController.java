@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("api/coupons")
 public class ConsumptionHistoryController {
     @Autowired
-    ConsumptionHistoryService chService;
+    private ConsumptionHistoryService chService;
     @PostMapping("consume")
     public Coupon consume(@RequestBody ConsumptionHistoryDTO chDTO){
         return chService.consume(chDTO);

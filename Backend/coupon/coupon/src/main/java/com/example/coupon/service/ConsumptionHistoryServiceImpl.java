@@ -15,15 +15,15 @@ import java.util.List;
 @Service
 public class ConsumptionHistoryServiceImpl implements ConsumptionHistoryService{
     @Autowired
-    ConsumptionHistoryRepository chRepo;
+    private ConsumptionHistoryRepository chRepo;
     @Autowired
-    CouponService couponService;
+    private CouponService couponService;
     @Override
     public Coupon consume(ConsumptionHistoryDTO chDTO) {
         Coupon theCoupon = couponService.findByCode(chDTO.getCouponCode());
         if(ISCouponValidToUse(theCoupon)){
             theCoupon.setCurrentNumberOfUsages(theCoupon.getCurrentNumberOfUsages() + 1);
-            ConsumptionHistory consumptionHistory = new ConsumptionHistory(chDTO.getOrderId(), theCoupon, new Date());
+            ConsumptionHistory consumptionHistory = new ConsumptionHistory(chDTO.getOrderCode(), theCoupon, new Date());
             chRepo.save(consumptionHistory);
             return theCoupon;
         }else {

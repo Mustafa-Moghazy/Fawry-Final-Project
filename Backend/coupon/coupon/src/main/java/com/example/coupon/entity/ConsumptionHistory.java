@@ -10,7 +10,7 @@ public class ConsumptionHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long orderId;
+    private String orderCode;
     @ManyToOne
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
@@ -19,9 +19,9 @@ public class ConsumptionHistory {
     public ConsumptionHistory() {
     }
 
-    public ConsumptionHistory(long orderId, Coupon theCoupon, Date date) {
+    public ConsumptionHistory(String orderCode, Coupon theCoupon, Date date) {
         this.coupon = theCoupon;
-        this.orderId = orderId;
+        this.orderCode = orderCode;
         this.consumptionDate = date;
     }
 
@@ -33,12 +33,12 @@ public class ConsumptionHistory {
         this.id = id;
     }
 
-    public long getOrderId() {
-        return orderId;
+    public String getOrderCode() {
+        return orderCode;
     }
 
-    public void setOrderId(long orderId) {
-        this.orderId = orderId;
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
     }
 
     public Coupon getCoupon() {
