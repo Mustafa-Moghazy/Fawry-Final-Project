@@ -7,6 +7,7 @@ import com.example.product.repository.ProductConsumptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class ProductConsumptionServiceImpl implements ProductConsumptionService{
@@ -21,7 +22,14 @@ public class ProductConsumptionServiceImpl implements ProductConsumptionService{
 
         return pcRepo.save(productConsumption);
     }
-
+    @Override
+    public List<ProductConsumption> saveAll(List<ProductConsumptionDTO> productConsumptionDTOList) {
+        List<ProductConsumption> productConsumptionList = new ArrayList<>();
+        for (ProductConsumptionDTO dto : productConsumptionDTOList) {
+            productConsumptionList.add(this.save(dto));
+        }
+        return productConsumptionList;
+    }
     @Override
     public List<ProductConsumption> findAll() {
         return pcRepo.findAll();

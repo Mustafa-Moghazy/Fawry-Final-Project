@@ -26,8 +26,8 @@ public class ProductConsumptionController {
     public ProductConsumption getProductOrder(@RequestBody ProductOrderDTO productOrderDTO){
         return pcService.findByProductCodeAndOrderCode(productOrderDTO.getProductCode(), productOrderDTO.getOrderCode());
     }
-    @PostMapping("buy-product")
-    public ProductConsumption buyProduct(@RequestBody ProductConsumptionDTO productConsumptionDTO){
-        return pcService.save(productConsumptionDTO);
+    @PostMapping("buy-products")
+    public List<ProductConsumption> buyProduct(@RequestBody List<ProductConsumptionDTO> productConsumptionDTOList){
+        return pcService.saveAll(productConsumptionDTOList);
     }
 }

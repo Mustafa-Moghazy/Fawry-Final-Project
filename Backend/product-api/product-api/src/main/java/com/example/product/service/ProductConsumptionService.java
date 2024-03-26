@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ProductConsumptionService {
     ProductConsumption save(ProductConsumptionDTO productConsumptionDTO);
+    List<ProductConsumption> saveAll(List<ProductConsumptionDTO> productConsumptionDTOList);
     List<ProductConsumption> findAll();
     List<ProductConsumption> findByProductCode(String productCode);
     ProductConsumption findByProductCodeAndOrderCode(String productCode, String orderCode);
