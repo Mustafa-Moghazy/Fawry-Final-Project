@@ -78,4 +78,11 @@ public class CouponServiceImpl implements CouponService{
                         coupon.getValueType().toUpperCase().equals("PERCENTAGE")) &&
                 coupon.getExpiryDate().after(new Date());
     }
+
+    @Override
+    public void decrementNumberOfUsages(String couponCode) {
+        Coupon theCoupon = findByCode(couponCode);
+        theCoupon.setCurrentNumberOfUsages(theCoupon.getCurrentNumberOfUsages() - 1);
+    }
+
 }

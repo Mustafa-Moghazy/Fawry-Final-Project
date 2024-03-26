@@ -9,4 +9,6 @@ import java.util.List;
 public interface ConsumptionHistoryService {
     Coupon consume(ConsumptionHistoryDTO chDTO);
     List<ConsumptionHistory> findAll();
+    List<ConsumptionHistory> getCouponConsumption(String CouponCode);
+    void cancelCouponConsumption(ConsumptionHistoryDTO consumptionHistoryDTO);
 }

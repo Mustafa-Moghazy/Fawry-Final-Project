@@ -12,4 +12,5 @@ public interface CouponService {
     Coupon updateCoupon(CouponDTO couponDTO);
     void deleteCoupon(String code);
     boolean ISValidToSave(CouponDTO couponDTO);
+    void decrementNumberOfUsages(String couponCode);
 }
