@@ -15,13 +15,13 @@ public class GlobalExceptionHandler {
         ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(FindByCodeException.class)
-    public ResponseEntity<Object> handleFindBuCodeException(FindByCodeException ex, WebRequest request){
+    @ExceptionHandler(CouponNotFoundException.class)
+    public ResponseEntity<Object> handleCouponNotFoundException(CouponNotFoundException ex, WebRequest request){
         ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(NotValidToUseException.class)
-    public ResponseEntity<Object> handleNotValidToUseException(NotValidToUseException ex, WebRequest request){
+    @ExceptionHandler(ConsumeException.class)
+    public ResponseEntity<Object> handleNotValidToUseException(ConsumeException ex, WebRequest request){
         ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }

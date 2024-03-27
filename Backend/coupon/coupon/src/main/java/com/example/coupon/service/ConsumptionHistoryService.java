@@ -1,14 +1,13 @@
 package com.example.coupon.service;
 
-import com.example.coupon.dto.ConsumptionHistoryDTO;
+import com.example.coupon.dto.consumeCouponDTO;
 import com.example.coupon.entity.ConsumptionHistory;
-import com.example.coupon.entity.Coupon;
 
 import java.util.List;
 
 public interface ConsumptionHistoryService {
-    Coupon consume(ConsumptionHistoryDTO chDTO);
+    void save(ConsumptionHistory consumptionHistory);
     List<ConsumptionHistory> findAll();
-    List<ConsumptionHistory> getCouponConsumption(String CouponCode);
-    void cancelCouponConsumption(ConsumptionHistoryDTO consumptionHistoryDTO);
+    List<ConsumptionHistory> getCouponConsumptions(String CouponCode);
+    void cancelCouponConsumption(consumeCouponDTO consumeCouponDTO);
 }

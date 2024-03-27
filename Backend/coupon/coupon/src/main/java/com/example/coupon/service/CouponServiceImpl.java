@@ -1,9 +1,12 @@
 package com.example.coupon.service;
 
+import com.example.coupon.dto.consumeCouponDTO;
 import com.example.coupon.dto.CouponDTO;
+import com.example.coupon.entity.ConsumptionHistory;
 import com.example.coupon.entity.Coupon;
+import com.example.coupon.exception.ConsumeException;
 import com.example.coupon.exception.CreateCouponException;
-import com.example.coupon.exception.FindByCodeException;
+import com.example.coupon.exception.CouponNotFoundException;
 import com.example.coupon.repository.CouponRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,10 @@ import java.util.List;
 @Service
 public class CouponServiceImpl implements CouponService{
     @Autowired
-    CouponRepository couponRepo;
+    private CouponRepository couponRepo;
+    @Autowired
+    private ConsumptionHistoryService chService;
+
     @Override
     public List<Coupon> findAll() {
         return couponRepo.findAll();
@@ -24,7 +30,7 @@ public class CouponServiceImpl implements CouponService{
     public Coupon findByCode(String code) {
         Coupon theCoupon = couponRepo.findByCode(code);
         if (theCoupon == null)
-            throw new FindByCodeException("Coupon with code: " + code + "Not Found!!!");
+            throw new CouponNotFoundException("Coupon with code: " + code + "Not Found!!!");
         return theCoupon;
     }
 
@@ -32,9 +38,9 @@ public class CouponServiceImpl implements CouponService{
     public Coupon createCoupon(CouponDTO couponDTO) {
         Coupon theCoupon = couponRepo.findByCode(couponDTO.getCode());
         if (theCoupon != null){
-            throw new FindByCodeException("Coupon With Code: " + couponDTO.getCode() +" Already Exist");
+            throw new CreateCouponException("Coupon With Code: " + couponDTO.getCode() + " Already Exist");
         }
-        if(ISValidToSave(couponDTO)){
+        if(validToSave(couponDTO)){
             Coupon newCoupon = new Coupon(couponDTO.getCode(), couponDTO.getExpiryDate(), couponDTO.getValueType(), couponDTO.getValue(), couponDTO.getMaxNumberOfUsages());
             return couponRepo.save(newCoupon);
         }else {
@@ -44,8 +50,11 @@ public class CouponServiceImpl implements CouponService{
 
     @Override
     public Coupon updateCoupon(CouponDTO couponDTO) {
-        Coupon theCoupon = findByCode(couponDTO.getCode());
-        if (ISValidToSave(couponDTO)) {
+        Coupon theCoupon = couponRepo.findByCode(couponDTO.getCode());
+        if(theCoupon == null){
+            throw new CouponNotFoundException("Coupon with code: " + couponDTO.getCode() + " Not found to update it!!");
+        }
+        if (validToSave(couponDTO)) {
             // set new values //
             theCoupon.setCode(couponDTO.getCode());
             theCoupon.setValue(couponDTO.getValue());
@@ -62,27 +71,54 @@ public class CouponServiceImpl implements CouponService{
     @Transactional
     @Override
     public void deleteCoupon(String code) {
-        Coupon theCoupon = findByCode(code);
-        if (theCoupon != null) {
-            couponRepo.deleteByCode(code);
+        Coupon theCoupon = couponRepo.findByCode(code);
+        if(theCoupon == null){
+            throw new CouponNotFoundException("Coupon with code: " + code + " Not found to delete it!!");
         }
+        couponRepo.deleteByCode(code);
     }
+
     @Override
-    public boolean ISValidToSave(CouponDTO coupon){
+    public boolean validToSave(CouponDTO coupon){
         return coupon != null &&
                 coupon.getCode() != null &&
                 !coupon.getCode().isEmpty() &&
                 coupon.getMaxNumberOfUsages() > 0 &&
                 coupon.getValue() > 0 &&
-                (coupon.getValueType().toUpperCase().equals("FIXED") ||
-                        coupon.getValueType().toUpperCase().equals("PERCENTAGE")) &&
+                (coupon.getValueType().equalsIgnoreCase("FIXED") ||
+                        coupon.getValueType().equalsIgnoreCase("PERCENTAGE")) &&
                 coupon.getExpiryDate().after(new Date());
     }
 
     @Override
-    public void decrementNumberOfUsages(String couponCode) {
-        Coupon theCoupon = findByCode(couponCode);
-        theCoupon.setCurrentNumberOfUsages(theCoupon.getCurrentNumberOfUsages() - 1);
+    public Coupon consume(consumeCouponDTO consumeCouponDTO) {
+        Coupon theCoupon = findByCode(consumeCouponDTO.getCouponCode());
+        if(validToConsume(theCoupon)){
+            incrementNumberOfUsages(theCoupon);
+            ConsumptionHistory consumptionHistory = new ConsumptionHistory(consumeCouponDTO.getOrderCode(), theCoupon, new Date());
+            chService.save(consumptionHistory);
+            return theCoupon;
+        }else {
+            throw new ConsumeException("Coupon With Code: " + consumeCouponDTO.getCouponCode() + " Not Valid To Consume");
+        }
+    }
+
+    @Override
+    public boolean validToConsume(Coupon coupon) {
+        return coupon.getMaxNumberOfUsages() > coupon.getCurrentNumberOfUsages() &&
+                coupon.getExpiryDate().after(new Date());
+    }
+
+    @Override
+    public void decrementNumberOfUsages(Coupon coupon) {
+        coupon.setCurrentNumberOfUsages(coupon.getCurrentNumberOfUsages() - 1);
+        couponRepo.save(coupon);
+    }
+
+    @Override
+    public void incrementNumberOfUsages(Coupon coupon) {
+        coupon.setCurrentNumberOfUsages(coupon.getCurrentNumberOfUsages() + 1);
+        couponRepo.save(coupon);
     }
 
 }
