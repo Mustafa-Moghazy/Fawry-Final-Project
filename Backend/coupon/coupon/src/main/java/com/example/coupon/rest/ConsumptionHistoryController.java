@@ -24,8 +24,4 @@ public class ConsumptionHistoryController {
     public List<ConsumptionHistory> getCouponHistory(@PathVariable String couponCode){
         return chService.getCouponConsumptions(couponCode);
     }
-    @DeleteMapping("cancel-consumption")
-    public void cancelCouponConsumption(@RequestBody consumeCouponDTO consumeCouponDTO){
-        chService.cancelCouponConsumption(consumeCouponDTO);
-    }
 }

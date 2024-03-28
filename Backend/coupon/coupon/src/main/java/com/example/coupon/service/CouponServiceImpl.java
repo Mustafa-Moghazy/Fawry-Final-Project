@@ -50,10 +50,7 @@ public class CouponServiceImpl implements CouponService{
 
     @Override
     public Coupon updateCoupon(CouponDTO couponDTO) {
-        Coupon theCoupon = couponRepo.findByCode(couponDTO.getCode());
-        if(theCoupon == null){
-            throw new CouponNotFoundException("Coupon with code: " + couponDTO.getCode() + " Not found to update it!!");
-        }
+        Coupon theCoupon = findByCode(couponDTO.getCode());
         if (validToSave(couponDTO)) {
             // set new values //
             theCoupon.setCode(couponDTO.getCode());
@@ -67,15 +64,12 @@ public class CouponServiceImpl implements CouponService{
             throw new CreateCouponException("Not Valid Data Provided");
         }
     }
-
-    @Transactional
+    
     @Override
     public void deleteCoupon(String code) {
-        Coupon theCoupon = couponRepo.findByCode(code);
-        if(theCoupon == null){
-            throw new CouponNotFoundException("Coupon with code: " + code + " Not found to delete it!!");
-        }
-        couponRepo.deleteByCode(code);
+        Coupon theCoupon = findByCode(code);
+        chService.deleteCouponConsumptionHistory(code);
+        couponRepo.deleteById(theCoupon.getId());
     }
 
     @Override
@@ -101,6 +95,13 @@ public class CouponServiceImpl implements CouponService{
         }else {
             throw new ConsumeException("Coupon With Code: " + consumeCouponDTO.getCouponCode() + " Not Valid To Consume");
         }
+    }
+
+    @Override
+    public void cancelCouponConsumption(consumeCouponDTO chDTO) {
+        ConsumptionHistory consumptionHistory = chService.findByOrderCodeAndCoupon_Code(chDTO.getOrderCode(), chDTO.getCouponCode());
+        decrementNumberOfUsages(consumptionHistory.getCoupon());
+        chService.delete(consumptionHistory);
     }
 
     @Override

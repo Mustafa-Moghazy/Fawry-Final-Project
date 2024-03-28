@@ -9,5 +9,8 @@ public interface ConsumptionHistoryService {
     void save(ConsumptionHistory consumptionHistory);
     List<ConsumptionHistory> findAll();
     List<ConsumptionHistory> getCouponConsumptions(String CouponCode);
-    void cancelCouponConsumption(consumeCouponDTO consumeCouponDTO);
+    ConsumptionHistory findByOrderCodeAndCoupon_Code(String orderCode, String couponCode);
+    void delete(ConsumptionHistory consumptionHistory);
+
+    void deleteCouponConsumptionHistory(String code);
 }

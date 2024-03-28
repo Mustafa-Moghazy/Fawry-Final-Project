@@ -13,6 +13,7 @@ public interface CouponService {
     Coupon updateCoupon(CouponDTO couponDTO);
     void deleteCoupon(String code);
     Coupon consume(consumeCouponDTO chDTO);
+    void cancelCouponConsumption(consumeCouponDTO chDTO);
     boolean validToSave(CouponDTO couponDTO);
     boolean validToConsume(Coupon coupon);
     void decrementNumberOfUsages(Coupon coupon);

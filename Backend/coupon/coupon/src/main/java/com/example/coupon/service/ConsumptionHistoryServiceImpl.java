@@ -15,8 +15,6 @@ import java.util.List;
 public class ConsumptionHistoryServiceImpl implements ConsumptionHistoryService{
     @Autowired
     private ConsumptionHistoryRepository chRepo;
-    @Autowired
-    private CouponService couponService;
 
     @Override
     public void save(ConsumptionHistory consumptionHistory) {
@@ -34,9 +32,18 @@ public class ConsumptionHistoryServiceImpl implements ConsumptionHistoryService{
     }
 
     @Override
-    public void cancelCouponConsumption(consumeCouponDTO chDTO) {
-        ConsumptionHistory consumptionHistory = chRepo.findByOrderCodeAndCoupon_Code(chDTO.getOrderCode(), chDTO.getCouponCode());
-        couponService.decrementNumberOfUsages(consumptionHistory.getCoupon());
+    public void deleteCouponConsumptionHistory(String code) {
+        List<ConsumptionHistory> consumptionHistoryList = getCouponConsumptions(code);
+        chRepo.deleteAll(consumptionHistoryList);
+    }
+    @Override
+    public ConsumptionHistory findByOrderCodeAndCoupon_Code(String orderCode, String couponCode) {
+        return chRepo.findByOrderCodeAndCoupon_Code(orderCode, couponCode);
+    }
+
+    @Override
+    public void delete(ConsumptionHistory consumptionHistory) {
         chRepo.delete(consumptionHistory);
     }
+
 }
