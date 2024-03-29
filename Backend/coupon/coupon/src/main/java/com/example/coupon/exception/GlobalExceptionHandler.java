@@ -25,4 +25,14 @@ public class GlobalExceptionHandler {
         ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(ConsumedWithSameOrderException.class)
+    public ResponseEntity<Object> handleConsumedWithSameOrderException(ConsumedWithSameOrderException ex, WebRequest request){
+        ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(ConsumptionHistoryException.class)
+    public ResponseEntity<Object> handleConsumptionHistoryException(ConsumptionHistoryException ex, WebRequest request){
+        ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
 }

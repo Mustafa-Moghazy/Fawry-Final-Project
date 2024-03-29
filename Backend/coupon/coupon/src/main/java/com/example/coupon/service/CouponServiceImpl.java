@@ -4,11 +4,8 @@ import com.example.coupon.dto.consumeCouponDTO;
 import com.example.coupon.dto.CouponDTO;
 import com.example.coupon.entity.ConsumptionHistory;
 import com.example.coupon.entity.Coupon;
-import com.example.coupon.exception.ConsumeException;
-import com.example.coupon.exception.CreateCouponException;
-import com.example.coupon.exception.CouponNotFoundException;
+import com.example.coupon.exception.*;
 import com.example.coupon.repository.CouponRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +27,7 @@ public class CouponServiceImpl implements CouponService{
     public Coupon findByCode(String code) {
         Coupon theCoupon = couponRepo.findByCode(code);
         if (theCoupon == null)
-            throw new CouponNotFoundException("Coupon with code: " + code + "Not Found!!!");
+            throw new CouponNotFoundException("Coupon with code: " + code + " Not Found!!!");
         return theCoupon;
     }
 
@@ -64,7 +61,7 @@ public class CouponServiceImpl implements CouponService{
             throw new CreateCouponException("Not Valid Data Provided");
         }
     }
-    
+
     @Override
     public void deleteCoupon(String code) {
         Coupon theCoupon = findByCode(code);
@@ -87,6 +84,9 @@ public class CouponServiceImpl implements CouponService{
     @Override
     public Coupon consume(consumeCouponDTO consumeCouponDTO) {
         Coupon theCoupon = findByCode(consumeCouponDTO.getCouponCode());
+        if(consumedWithSameOrder(consumeCouponDTO)){
+            throw new ConsumedWithSameOrderException("Coupon with Code: '" + consumeCouponDTO.getCouponCode() + "' Consumed with the same Order before");
+        }
         if(validToConsume(theCoupon)){
             incrementNumberOfUsages(theCoupon);
             ConsumptionHistory consumptionHistory = new ConsumptionHistory(consumeCouponDTO.getOrderCode(), theCoupon, new Date());
@@ -96,10 +96,18 @@ public class CouponServiceImpl implements CouponService{
             throw new ConsumeException("Coupon With Code: " + consumeCouponDTO.getCouponCode() + " Not Valid To Consume");
         }
     }
+    @Override
+    public boolean consumedWithSameOrder(consumeCouponDTO consumeCouponDTO) {
+        ConsumptionHistory ch = chService.findByOrderCodeAndCoupon_Code(consumeCouponDTO.getOrderCode(), consumeCouponDTO.getCouponCode());
+        return ch != null;
+    }
 
     @Override
-    public void cancelCouponConsumption(consumeCouponDTO chDTO) {
-        ConsumptionHistory consumptionHistory = chService.findByOrderCodeAndCoupon_Code(chDTO.getOrderCode(), chDTO.getCouponCode());
+    public void cancelCouponConsumption(consumeCouponDTO consumeCouponDTO) {
+        ConsumptionHistory consumptionHistory = chService.findByOrderCodeAndCoupon_Code(consumeCouponDTO.getOrderCode(), consumeCouponDTO.getCouponCode());
+        if(consumptionHistory == null){
+            throw new ConsumptionHistoryException("Coupon With Code: '" + consumeCouponDTO.getCouponCode() + "' Not Applyed with that order before");
+        }
         decrementNumberOfUsages(consumptionHistory.getCoupon());
         chService.delete(consumptionHistory);
     }

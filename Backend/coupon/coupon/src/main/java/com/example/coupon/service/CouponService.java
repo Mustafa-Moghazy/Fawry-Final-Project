@@ -13,6 +13,9 @@ public interface CouponService {
     Coupon updateCoupon(CouponDTO couponDTO);
     void deleteCoupon(String code);
     Coupon consume(consumeCouponDTO chDTO);
+
+    boolean consumedWithSameOrder(consumeCouponDTO consumeCouponDTO);
+
     void cancelCouponConsumption(consumeCouponDTO chDTO);
     boolean validToSave(CouponDTO couponDTO);
     boolean validToConsume(Coupon coupon);
