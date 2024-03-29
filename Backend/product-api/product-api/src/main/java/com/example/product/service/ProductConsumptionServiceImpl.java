@@ -8,28 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Service
 public class ProductConsumptionServiceImpl implements ProductConsumptionService{
     @Autowired
     private ProductConsumptionRepository pcRepo;
-    @Autowired
-    private ProductService productService;
-    @Override
-    public ProductConsumption save(ProductConsumptionDTO productConsumptionDTO) {
-        Product product = productService.findByCode(productConsumptionDTO.getProductCode());
-        ProductConsumption productConsumption = new ProductConsumption(product, productConsumptionDTO.getOrderCode(), productConsumptionDTO.getQuantityConsumed(), productConsumptionDTO.getConsumedAt());
 
+    @Override
+    public ProductConsumption recordProductHistory(Product theproduct, ProductConsumptionDTO productConsumptionDTO) {
+        ProductConsumption productConsumption = new ProductConsumption(theproduct, productConsumptionDTO.getOrderCode(), productConsumptionDTO.getQuantityConsumed(), new Date());
         return pcRepo.save(productConsumption);
     }
-    @Override
-    public List<ProductConsumption> saveAll(List<ProductConsumptionDTO> productConsumptionDTOList) {
-        List<ProductConsumption> productConsumptionList = new ArrayList<>();
-        for (ProductConsumptionDTO dto : productConsumptionDTOList) {
-            productConsumptionList.add(this.save(dto));
-        }
-        return productConsumptionList;
-    }
+
     @Override
     public List<ProductConsumption> findAll() {
         return pcRepo.findAll();
@@ -43,5 +34,16 @@ public class ProductConsumptionServiceImpl implements ProductConsumptionService{
     @Override
     public ProductConsumption findByProductCodeAndOrderCode(String productCode, String orderCode) {
         return pcRepo.findByProductCodeAndOrderCode(productCode, orderCode);
+    }
+
+    @Override
+    public void deleteProductConsumption(ProductConsumptionDTO productConsumptionDTO) {
+        ProductConsumption productConsumption = findByProductCodeAndOrderCode(productConsumptionDTO.getProductCode(), productConsumptionDTO.getOrderCode());
+        pcRepo.delete(productConsumption);
+    }
+
+    @Override
+    public void deleteProductConsumptionHistory(String code) {
+        pcRepo.deleteAllByProduct_Code(code);
     }
 }

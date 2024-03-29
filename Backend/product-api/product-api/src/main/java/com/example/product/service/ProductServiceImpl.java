@@ -1,10 +1,13 @@
 package com.example.product.service;
 
+import com.example.product.dto.ProductConsumptionDTO;
 import com.example.product.dto.ProductDTO;
 import com.example.product.entity.Category;
 import com.example.product.entity.Product;
+import com.example.product.entity.ProductConsumption;
 import com.example.product.exception.CreateProductException;
 import com.example.product.exception.ProductNotFoundEception;
+import com.example.product.repository.ProductConsumptionRepository;
 import com.example.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,24 +23,26 @@ public class ProductServiceImpl implements ProductService{
     private ProductRepository productRepository;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    ProductConsumptionService pcService;
+
     @Override
     public Product createProduct(ProductDTO productDTO) {
-        if (!isProductValidToSave(productDTO)){
+        if (!validToSave(productDTO)){
             throw new CreateProductException("Not Valid Data Provided To Create Product");
         }
         Category category = categoryService.findByName(productDTO.getCategoryName());
-        Product product = new Product();
-        product.setCategory(category);
-        product.setCode(UUID.randomUUID().toString());
-        product.setDescription(productDTO.getDescription());
-        product.setName(productDTO.getName());
-        product.setPrice(productDTO.getPrice());
-        product.setImgUrl(productDTO.getImgUrl());
+        Product product = new Product(category,
+                UUID.randomUUID().toString(),
+                productDTO.getDescription(),
+                productDTO.getName(),
+                productDTO.getPrice(),
+                productDTO.getImgUrl());
 
         return productRepository.save(product);
     }
 
-    private boolean isProductValidToSave(ProductDTO productDTO) {
+    private boolean validToSave(ProductDTO productDTO) {
         return productDTO != null &&
                 !productDTO.getCategoryName().isEmpty() &&
                 !productDTO.getName().isEmpty() &&
@@ -65,24 +70,26 @@ public class ProductServiceImpl implements ProductService{
     public Product findByCode(String code) {
         Product theProduct = productRepository.findByCode(code);
         if(theProduct == null)
-            throw new ProductNotFoundEception("Product with code: "+code+" Not Found!!");
+            throw new ProductNotFoundEception("Product with code: '" + code + "' Not Found!!");
         return productRepository.findByCode(code);
     }
 
     @Override
     public Product updateProduct(String code, ProductDTO productDTO) {
-        Product theProduct = productRepository.findByCode(code);
-        if(theProduct == null)
-            throw new ProductNotFoundEception("Product with code: "+code+" Not Found!!");
-
-        return createProduct(productDTO);
+        Product theProduct = findByCode(code);
+        return productRepository.save(theProduct);
     }
 
     @Override
     public void deleteProduct(String code) {
         Product theProduct = productRepository.findByCode(code);
-        if(theProduct == null)
-            throw new ProductNotFoundEception("Product with code: "+code+" Not Found!!");
+        pcService.deleteProductConsumptionHistory(code);
         productRepository.delete(theProduct);
+    }
+
+    @Override
+    public ProductConsumption recordProductHistory(ProductConsumptionDTO productConsumptionDTO) {
+        Product theProduct = findByCode(productConsumptionDTO.getProductCode());
+        return pcService.recordProductHistory(theProduct, productConsumptionDTO);
     }
 }

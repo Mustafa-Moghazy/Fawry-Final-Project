@@ -1,14 +1,17 @@
 package com.example.product.service;
 
 import com.example.product.dto.ProductConsumptionDTO;
+import com.example.product.entity.Product;
 import com.example.product.entity.ProductConsumption;
 
 import java.util.List;
 
 public interface ProductConsumptionService {
-    ProductConsumption save(ProductConsumptionDTO productConsumptionDTO);
-    List<ProductConsumption> saveAll(List<ProductConsumptionDTO> productConsumptionDTOList);
+    ProductConsumption recordProductHistory(Product product, ProductConsumptionDTO productConsumptionDTO);
     List<ProductConsumption> findAll();
     List<ProductConsumption> findByProductCode(String productCode);
     ProductConsumption findByProductCodeAndOrderCode(String productCode, String orderCode);
+    void deleteProductConsumption(ProductConsumptionDTO productConsumptionDTO);
+    void deleteProductConsumptionHistory(String code);
+
 }
