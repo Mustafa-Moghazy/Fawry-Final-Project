@@ -16,17 +16,17 @@ public class CategoryServiceImpl implements CategoryService{
     private CategoryRepository categoryRepository;
     @Override
     public Category createCategory(CategoryDTO categoryDTO) {
-        if(categoryDTO == null || categoryDTO.getCategoryName().isEmpty() )
+        if(categoryDTO == null || categoryDTO.getCategoryName().isEmpty() ) {
             throw new CreateCategoryException("Not Valid Data Provided For Create Category");
-        Category category = new Category();
-        category.setName(categoryDTO.getCategoryName());
+        }
+        Category category = new Category(categoryDTO.getCategoryName());
         return categoryRepository.save(category);
     }
     @Override
     public Category findByName(String name) {
         Category category = categoryRepository.findByName(name);
         if(category == null)
-            throw new CategoryNotFoundException("Category With Name: "+name+" Not Found!!");
+            throw new CategoryNotFoundException("Category With Name: '" + name + "' Not Found!!");
         return categoryRepository.findByName(name);
     }
 

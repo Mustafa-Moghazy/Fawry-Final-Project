@@ -1,7 +1,9 @@
 package com.example.product.rest;
 
 import com.example.product.dto.ProductDTO;
+import com.example.product.dto.ProductConsumptionDTO;
 import com.example.product.entity.Product;
+import com.example.product.entity.ProductConsumption;
 import com.example.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,10 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/product")
+@RequestMapping("api/products")
 public class ProductController {
     @Autowired
     private ProductService productService;
+
     @PostMapping("")
     public Product createProduct(@RequestBody ProductDTO productDTO){
         return productService.createProduct(productDTO);
@@ -52,5 +55,11 @@ public class ProductController {
     public void deleteProduct(@PathVariable String code) {
         productService.deleteProduct(code);
     }
+
+    @PostMapping("history")
+    public ProductConsumption recordProductHistory(@RequestBody ProductConsumptionDTO productConsumptionDTO) {
+        return productService.recordProductHistory(productConsumptionDTO);
+    }
+
 
 }

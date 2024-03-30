@@ -14,20 +14,25 @@ import java.util.List;
 public class ProductConsumptionController {
     @Autowired
     private ProductConsumptionService pcService;
+
     @GetMapping("history")
     public List<ProductConsumption> getAllProductsHistory(){
         return pcService.findAll();
     }
+
     @GetMapping("history/{code}")
     public List<ProductConsumption> getProductHistory(@PathVariable String code){
         return pcService.findByProductCode(code);
     }
+
     @GetMapping("history/product-order")
     public ProductConsumption getProductOrder(@RequestBody ProductOrderDTO productOrderDTO){
         return pcService.findByProductCodeAndOrderCode(productOrderDTO.getProductCode(), productOrderDTO.getOrderCode());
     }
-    @PostMapping("buy-products")
-    public List<ProductConsumption> buyProduct(@RequestBody List<ProductConsumptionDTO> productConsumptionDTOList){
-        return pcService.saveAll(productConsumptionDTOList);
+
+    @DeleteMapping("history/product-order")
+    public void deleteProductConsumptionRecord(@RequestBody ProductOrderDTO productOrderDTO){
+        pcService.deleteProductConsumption(productOrderDTO);
     }
+
 }
