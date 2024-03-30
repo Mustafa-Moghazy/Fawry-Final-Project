@@ -43,7 +43,8 @@ public class ProductConsumptionServiceImpl implements ProductConsumptionService{
     }
 
     @Override
-    public void deleteProductConsumptionHistory(String code) {
-        pcRepo.deleteAllByProduct_Code(code);
+    public void deleteProductConsumptionHistory(Product product) {
+        List<ProductConsumption> productConsumptions = findByProductCode(product.getCode());
+        pcRepo.deleteAll(productConsumptions);
     }
 }

@@ -12,6 +12,6 @@ public interface ProductConsumptionService {
     List<ProductConsumption> findByProductCode(String productCode);
     ProductConsumption findByProductCodeAndOrderCode(String productCode, String orderCode);
     void deleteProductConsumption(ProductConsumptionDTO productConsumptionDTO);
-    void deleteProductConsumptionHistory(String code);
+    void deleteProductConsumptionHistory(Product product);
 
 }

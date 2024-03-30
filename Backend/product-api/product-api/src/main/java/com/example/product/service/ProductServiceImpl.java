@@ -5,6 +5,7 @@ import com.example.product.dto.ProductDTO;
 import com.example.product.entity.Category;
 import com.example.product.entity.Product;
 import com.example.product.entity.ProductConsumption;
+import com.example.product.exception.CategoryNotFoundException;
 import com.example.product.exception.CreateProductException;
 import com.example.product.exception.ProductNotFoundException;
 import com.example.product.repository.ProductRepository;
@@ -62,7 +63,11 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<Product> findByCategoryName(String categoryName) {
-        return productRepository.findByCategoryName(categoryName);
+        Category category = categoryService.findByName(categoryName);
+        if( category == null ){
+            throw new CategoryNotFoundException("Category with name '" + categoryName + "' Not Found!!");
+        }
+        return productRepository.findByCategoryName(category.getName());
     }
 
     @Override
@@ -86,7 +91,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public void deleteProduct(String code) {
         Product theProduct = productRepository.findByCode(code);
-        pcService.deleteProductConsumptionHistory(code);
+        pcService.deleteProductConsumptionHistory(theProduct);
         productRepository.delete(theProduct);
     }
 
