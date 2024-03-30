@@ -1,13 +1,13 @@
 package com.example.product.service;
 
 import com.example.product.dto.ProductConsumptionDTO;
+import com.example.product.dto.ProductOrderDTO;
 import com.example.product.entity.Product;
 import com.example.product.entity.ProductConsumption;
 import com.example.product.repository.ProductConsumptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @Service
@@ -37,8 +37,8 @@ public class ProductConsumptionServiceImpl implements ProductConsumptionService{
     }
 
     @Override
-    public void deleteProductConsumption(ProductConsumptionDTO productConsumptionDTO) {
-        ProductConsumption productConsumption = findByProductCodeAndOrderCode(productConsumptionDTO.getProductCode(), productConsumptionDTO.getOrderCode());
+    public void deleteProductConsumption(ProductOrderDTO productOrderDTO) {
+        ProductConsumption productConsumption = findByProductCodeAndOrderCode(productOrderDTO.getProductCode(), productOrderDTO.getOrderCode());
         pcRepo.delete(productConsumption);
     }
 

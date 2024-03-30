@@ -30,4 +30,9 @@ public class ProductConsumptionController {
         return pcService.findByProductCodeAndOrderCode(productOrderDTO.getProductCode(), productOrderDTO.getOrderCode());
     }
 
+    @DeleteMapping("history/product-order")
+    public void deleteProductConsumptionRecord(@RequestBody ProductOrderDTO productOrderDTO){
+        pcService.deleteProductConsumption(productOrderDTO);
+    }
+
 }
