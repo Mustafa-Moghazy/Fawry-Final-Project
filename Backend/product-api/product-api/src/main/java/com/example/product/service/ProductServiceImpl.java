@@ -6,8 +6,7 @@ import com.example.product.entity.Category;
 import com.example.product.entity.Product;
 import com.example.product.entity.ProductConsumption;
 import com.example.product.exception.CreateProductException;
-import com.example.product.exception.ProductNotFoundEception;
-import com.example.product.repository.ProductConsumptionRepository;
+import com.example.product.exception.ProductNotFoundException;
 import com.example.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -70,7 +69,7 @@ public class ProductServiceImpl implements ProductService{
     public Product findByCode(String code) {
         Product theProduct = productRepository.findByCode(code);
         if(theProduct == null)
-            throw new ProductNotFoundEception("Product with code: '" + code + "' Not Found!!");
+            throw new ProductNotFoundException("Product with code: '" + code + "' Not Found!!");
         return theProduct;
     }
 
