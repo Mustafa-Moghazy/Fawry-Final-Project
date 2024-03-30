@@ -71,12 +71,16 @@ public class ProductServiceImpl implements ProductService{
         Product theProduct = productRepository.findByCode(code);
         if(theProduct == null)
             throw new ProductNotFoundEception("Product with code: '" + code + "' Not Found!!");
-        return productRepository.findByCode(code);
+        return theProduct;
     }
 
     @Override
     public Product updateProduct(String code, ProductDTO productDTO) {
         Product theProduct = findByCode(code);
+        theProduct.setName(productDTO.getName());
+        theProduct.setDescription(productDTO.getDescription());
+        theProduct.setPrice(productDTO.getPrice());
+        theProduct.setImgUrl(productDTO.getImgUrl());
         return productRepository.save(theProduct);
     }
 
