@@ -1,4 +1,4 @@
-package com.example.product.rest;
+package com.example.product.controller;
 
 import com.example.product.dto.CategoryDTO;
 import com.example.product.entity.Category;

@@ -1,4 +1,4 @@
-package com.example.product.rest;
+package com.example.product.controller;
 
 import com.example.product.dto.ProductConsumptionDTO;
 import com.example.product.dto.ProductOrderDTO;
@@ -10,27 +10,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/products")
+@RequestMapping("api/products/history")
 public class ProductConsumptionController {
     @Autowired
     private ProductConsumptionService pcService;
 
-    @GetMapping("history")
-    public List<ProductConsumption> getAllProductsHistory(){
+    @GetMapping("")
+    public List<ProductConsumptionDTO> getAllProductsHistory(){
         return pcService.findAll();
     }
 
-    @GetMapping("history/{code}")
-    public List<ProductConsumption> getProductHistory(@PathVariable String code){
+    @GetMapping("{code}")
+    public List<ProductConsumptionDTO> getProductHistory(@PathVariable String code){
         return pcService.findByProductCode(code);
     }
 
-    @GetMapping("history/product-order")
-    public ProductConsumption getProductOrder(@RequestBody ProductOrderDTO productOrderDTO){
+    @GetMapping("product-order")
+    public ProductConsumptionDTO getProductOrder(@RequestBody ProductOrderDTO productOrderDTO){
         return pcService.findByProductCodeAndOrderCode(productOrderDTO.getProductCode(), productOrderDTO.getOrderCode());
     }
 
-    @DeleteMapping("history/product-order")
+    @DeleteMapping("product-order")
     public void deleteProductConsumptionRecord(@RequestBody ProductOrderDTO productOrderDTO){
         pcService.deleteProductConsumption(productOrderDTO);
     }
