@@ -12,8 +12,11 @@ import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
+    private final CategoryRepository categoryRepository;
     @Autowired
-    private CategoryRepository categoryRepository;
+    CategoryServiceImpl(CategoryRepository categoryRepository){
+        this.categoryRepository = categoryRepository;
+    }
     @Override
     public Category createCategory(CategoryDTO categoryDTO) {
         if(categoryDTO == null || categoryDTO.getCategoryName().isEmpty() ) {

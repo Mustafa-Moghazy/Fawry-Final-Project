@@ -19,12 +19,15 @@ import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService{
+    private final ProductRepository productRepository;
+    private final CategoryService categoryService;
+    private final ProductConsumptionService pcService;
     @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    ProductConsumptionService pcService;
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, ProductConsumptionService pcService) {
+        this.productRepository = productRepository;
+        this.categoryService = categoryService;
+        this.pcService = pcService;
+    }
 
     @Override
     public Product createProduct(ProductDTO productDTO) {
