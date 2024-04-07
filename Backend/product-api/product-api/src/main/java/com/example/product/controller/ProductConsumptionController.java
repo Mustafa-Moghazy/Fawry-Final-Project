@@ -12,8 +12,11 @@ import java.util.List;
 @RestController
 @RequestMapping("api/products/history")
 public class ProductConsumptionController {
+    private final ProductConsumptionService pcService;
     @Autowired
-    private ProductConsumptionService pcService;
+    ProductConsumptionController(ProductConsumptionService productConsumptionService){
+        this.pcService = productConsumptionService;
+    }
 
     @GetMapping("")
     public List<ProductConsumptionDTO> getAllProductsHistory(){
