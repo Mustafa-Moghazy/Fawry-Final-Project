@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("api/products")
 public class ProductController {
     private final ProductService productService;
@@ -27,7 +28,7 @@ public class ProductController {
         return productService.createProduct(productDTO);
     }
     @GetMapping("")
-    public List<Product> getAllProducts() {
+    public List<ProductDTO> getAllProducts() {
         return productService.getAllProducts();
     }
 
@@ -62,6 +63,5 @@ public class ProductController {
     public ProductConsumption recordProductHistory(@RequestBody ProductConsumptionDTO productConsumptionDTO) {
         return productService.recordProductHistory(productConsumptionDTO);
     }
-
 
 }

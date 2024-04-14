@@ -8,6 +8,7 @@ import com.example.product.entity.ProductConsumption;
 import com.example.product.exception.CategoryNotFoundException;
 import com.example.product.exception.CreateProductException;
 import com.example.product.exception.ProductNotFoundException;
+import com.example.product.mapper.ProductMapper;
 import com.example.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,17 +17,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final ProductConsumptionService pcService;
+    private final ProductMapper productMapper;
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, ProductConsumptionService pcService) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, ProductConsumptionService pcService, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.pcService = pcService;
+        this.productMapper = productMapper;
     }
 
     @Override
@@ -54,8 +58,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        List<Product> productList = productRepository.findAll();
+        return productList.stream()
+                .map(productMapper::productToProductDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
